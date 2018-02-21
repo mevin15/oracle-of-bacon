@@ -26,6 +26,8 @@ public class APIEndPoint {
 
     @Get("bacon-to?actor=:actorName")
     public String getConnectionsToKevinBacon(String actorName) {
+    	// Add the search to Redis 
+    	redisRepository.addSearch(actorName);
     	List<?> connections = neo4JRepository.getConnectionsToKevinBacon(actorName);
     	// Convert array in string 
     	String json = new Gson().toJson(connections);
@@ -34,7 +36,7 @@ public class APIEndPoint {
 
     @Get("suggest?q=:searchQuery")
     public List<String> getActorSuggestion(String searchQuery) throws IOException {
-        return Arrays.asList("Niro, Chel",
+    	return Arrays.asList("Niro, Chel",
                 "Senanayake, Niro",
                 "Niro, Juan Carlos",
                 "de la Rua, Niro",
@@ -43,11 +45,7 @@ public class APIEndPoint {
 
     @Get("last-searches")
     public List<String> last10Searches() {
-        return Arrays.asList("Peckinpah, Sam",
-                "Robbins, Tim (I)",
-                "Freeman, Morgan (I)",
-                "De Niro, Robert",
-                "Pacino, Al (I)");
+    	 return redisRepository.getLastTenSearches();
     }
 
     @Get("actor?name=:actorName")
