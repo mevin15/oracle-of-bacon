@@ -1,6 +1,8 @@
 package com.serli.oracle.of.bacon.loader.elasticsearch;
 
 import com.serli.oracle.of.bacon.repository.ElasticSearchRepository;
+
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.RestHighLevelClient;
 
 import java.io.BufferedReader;
@@ -27,6 +29,14 @@ public class CompletionLoader {
                     .lines()
                     .forEach(line -> {
                         //TODO ElasticSearch insert
+                        IndexRequest  indexRequest = new IndexRequest("actors", "actor").source("name", line);                        
+                    	try {
+							client.index(indexRequest);
+							count.addAndGet(1);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}   
                         System.out.println(line);
                     });
         }
